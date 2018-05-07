@@ -1,0 +1,12 @@
+## Interface: 70300
+## Title: GGRL
+## Notes: GGRL
+## Author: Kraffs
+## Version: 0.1
+
+embeds.xml
+
+core.lua
+
+Antorus/Antorus.lua
+Antorus/Argus.lua
