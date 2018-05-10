@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------
 -- Globals
 --
+-- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, tinsert, table, GetInstanceInfo, UnitExists, type
 
 GGRL = LibStub("AceAddon-3.0"):NewAddon("GGRL", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
 
@@ -10,7 +11,9 @@ if C_ChatInfo then
 end
 
 local SendAddonMessage = SendAddonMessage
-local tinsert, twipe = tinsert, table.wipe
+local tinsert, twipe, type = table.insert, table.wipe, type
+local GetInstanceInfo = GetInstanceInfo
+local UnitExists = UnitExists
 
 GGRL.loadedBosses = {}
 GGRL.timerCount = 0
@@ -53,17 +56,17 @@ end
 function GGRL:ENCOUNTER_START(evt, encounterID)
   -- Check in GGRL.loadedBosses if encounterid exists to start timer, otherwise do nothing
   if IsBossLoaded(self.loadedBosses, encounterID) then
-    GGRL:Print("Boss Loaded")
-    GGRL:StartEncounterTimer(encounterID)
+    self:Print("Boss Loaded")
+    self:StartEncounterTimer(encounterID)
   end
 end
 
 function GGRL:ENCOUNTER_END()
-  GGRL:StopEncounterTimer()
+  self:StopEncounterTimer()
 end
 
 function GGRL:COMBAT_LOG_EVENT_UNFILTERED(...)
-  GGRL.Antorus:OnCombatEvent(self.currentBoss, ...)
+  self.Antorus:OnCombatEvent(self.currentBoss, ...)
 end
 
 -----------------------------------------------------------------------
@@ -79,7 +82,7 @@ function GGRL:LoadRaid()
   -- Load Raid bosses here. (Clear Bosses table before loading the new ones?)
   twipe(self.loadedBosses)
   -- Antorus
-  if instanceId == 1712 then
+  if id == 1712 then
     self.Antorus:Load()
   end
 end
@@ -143,15 +146,15 @@ end
 
 function GGRL:HandleSlash(input)
   if input == "start" then
-    GGRL:StartEncounterTimer(2092)
+    self:StartEncounterTimer(2092)
   end
 
   if input == "stop" then
-    GGRL:StopEncounterTimer()
+    self:StopEncounterTimer()
   end
 
   if input == "argus" then
-    GGRL.Antorus:Load(1712)
+    self.Antorus:Load(1712)
     self.currentBoss = 2092
   end
 end

@@ -1,3 +1,4 @@
+-- GLOBALS: GGRL
 local Boss = {}
 GGRL.Antorus.Argus = Boss
 
