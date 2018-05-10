@@ -1,4 +1,5 @@
 -- GLOBALS: GGRL
+local GGRL = GGRL
 local Raid = {}
 GGRL.Antorus = Raid
 

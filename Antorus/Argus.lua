@@ -1,8 +1,18 @@
 -- GLOBALS: GGRL
+local GGRL = GGRL
 local Boss = {}
 GGRL.Antorus.Argus = Boss
 
--- type (string), time (int), duration (int), text (string), target (string), sound (bool)
+--[[ 
+  1 type (string)
+  2 time (int)
+  3 duration (int)
+  4 text (string)
+  5 target (string)
+  6 sound (bool)
+  7 soundfile (string)
+]]
+
 local timers = {
   -- Phases
   [1] = {

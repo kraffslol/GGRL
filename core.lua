@@ -3,13 +3,14 @@
 --
 -- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, tinsert, table, GetInstanceInfo, UnitExists, type
 
-GGRL = LibStub("AceAddon-3.0"):NewAddon("GGRL", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
+local GGRL = LibStub("AceAddon-3.0"):NewAddon("GGRL", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
 
 -- 8.0 Compat
 if C_ChatInfo then
-  RegisterAddonMessagePrefix, SendAddonMessage = C_ChatInfo.RegisterAddonMessagePrefix, C_ChatInfo.SendAddonMessage
+  SendAddonMessage = C_ChatInfo.SendAddonMessage
 end
 
+local _G = _G
 local SendAddonMessage = SendAddonMessage
 local tinsert, twipe, type = table.insert, table.wipe, type
 local GetInstanceInfo = GetInstanceInfo
@@ -20,6 +21,8 @@ GGRL.timerCount = 0
 GGRL.currentBoss = nil
 GGRL.currentBossTimes = {}
 GGRL.currentBossPhase = 1
+
+_G["GGRL"] = GGRL
 
 -----------------------------------------------------------------------
 -- Utility
@@ -75,9 +78,7 @@ end
 
 function GGRL:LoadRaid()
   local _, instanceType, _, _, _, _, _, id = GetInstanceInfo()
-  if instanceType == "none" then
-    return false
-  end
+  if instanceType == "none" then return end
 
   -- Load Raid bosses here. (Clear Bosses table before loading the new ones?)
   twipe(self.loadedBosses)
@@ -116,15 +117,20 @@ function GGRL:TimerTick()
   -- Process boss events here and send message
   local event = GetBossEvent(self.loadedBosses[self.currentBoss][self.currentBossPhase], self.timerCount)
   if event then
-    -- 1 type (string), 2 time (int), 3 duration (int), 4 text (string), 5 target (string), 6 sound (bool)
+    --[[ 
+      1 type (string)
+      2 time (int)
+      3 duration (int)
+      4 text (string)
+      5 target (string)
+      6 sound (bool)
+      7 soundfile (string)
+    ]]
     self:Print(event[1], event[2], event[4])
     --GGRL GGRL_DURATION GGRL_SOUND GGRL_MESSAGE
-    if event[1] == "RAID" then
-      SendAddonMessage("GGRL", event[4], "RAID")
-    end
+    if event[1] == "RAID" then SendAddonMessage("GGRL", event[4], "RAID") end
 
-    if event[1] == "WHISPER" then
-      if not event[5] then return end
+    if event[1] == "WHISPER" and event[5] then
       -- If target is a table then iterate through it and send a whisper to each target.
       if type(event[5]) == "table" then
         for i = 1, #event[5] do
