@@ -27,7 +27,7 @@ GGRL.currentBossPhase = 1
 
 local function GetBossEvent(table, val)
   for i = 1, #table do
-    if table[i]["time"] == val then
+    if table[i][2] == val then
       return table[i]
     end
   end
@@ -116,23 +116,25 @@ function GGRL:TimerTick()
   -- Process boss events here and send message
   local event = GetBossEvent(self.loadedBosses[self.currentBoss][self.currentBossPhase], self.timerCount)
   if event then
-    self:Print(event["type"], event["target"], event["text"])
+    -- 1 type (string), 2 time (int), 3 duration (int), 4 text (string), 5 target (string), 6 sound (bool)
+    self:Print(event[1], event[2], event[4])
     --GGRL GGRL_DURATION GGRL_SOUND GGRL_MESSAGE
-    if event["type"] == "RAID" then
-      SendAddonMessage("GGRL", event["text"], "RAID")
+    if event[1] == "RAID" then
+      SendAddonMessage("GGRL", event[4], "RAID")
     end
 
-    if event["type"] == "WHISPER" then
+    if event[1] == "WHISPER" then
+      if not event[5] then return end
       -- If target is a table then iterate through it and send a whisper to each target.
-      if type(event["target"]) == "table" then
-        for i = 1, #event["target"] do
-          if (UnitExists(event["target"][i])) then
-            SendAddonMessage("GGRL", event["text"], "WHISPER", event["target"][i])
+      if type(event[5]) == "table" then
+        for i = 1, #event[5] do
+          if (UnitExists(event[5][i])) then
+            SendAddonMessage("GGRL", event[4], "WHISPER", event[5][i])
           end
         end
       else
-        if (UnitExists(event["target"])) then
-          SendAddonMessage("GGRL", event["text"], "WHISPER", event["target"])
+        if (UnitExists(event[5])) then
+          SendAddonMessage("GGRL", event[4], "WHISPER", event[5])
         end
       end
     end

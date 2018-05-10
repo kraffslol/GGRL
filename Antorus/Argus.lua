@@ -2,44 +2,45 @@
 local Boss = {}
 GGRL.Antorus.Argus = Boss
 
+-- type (string), time (int), duration (int), text (string), target (string), sound (bool)
 local timers = {
   -- Phases
   [1] = {
-    {type = "RAID", time = 7, duration = 5, text = "Melee Spread"},
-    {type = "RAID", time = 26, duration = 6, text = "Cone"},
-    {type = "RAID", time = 42, duration = 5, text = "Melee Spread"},
-    {type = "RAID", time = 47, duration = 6, text = "Cone"},
-    {type = "RAID", time = 60, duration = 3, text = "POTS"},
-    {type = "RAID", time = 67, duration = 6, text = "Cone"},
-    {type = "RAID", time = 73, duration = 9, text = "Buff -> Spread"},
-    {type = "RAID", time = 87, duration = 6, text = "Cone"},
-    {type = "RAID", time = 107, duration = 6, text = "Cone"}
+    {"RAID", 7, 5, "Melee Spread"},
+    {"RAID", 26, 6, "Cone"},
+    {"RAID", 42, 5, "Melee Spread"},
+    {"RAID", 47, 6, "Cone"},
+    {"RAID", 60, 3, "POTS"},
+    {"RAID", 67, 6, "Cone"},
+    {"RAID", 73, 9, "Buff -> Spread"},
+    {"RAID", 87, 6, "Cone"},
+    {"RAID", 107, 6, "Cone"}
   },
   [2] = {
-    {type = "RAID", time = 3, duration = 10, text = "Spread + Bombs"},
-    {type = "RAID", time = 43, duration = 5, text = "Bomb inc"},
-    {type = "RAID", time = 64, duration = 8, text = "Spread"},
-    {type = "RAID", time = 87, duration = 10, text = "Bomb inc -> Tank Suicide"}
+    {"RAID", 3, 10, "Spread + Bombs"},
+    {"RAID", 43, 5, "Bomb inc"},
+    {"RAID", 64, 8, "Spread"},
+    {"RAID", 87, 10, "Bomb inc -> Tank Suicide"}
   },
   [3] = {
-    {type = "RAID", time = 0, duration = 5, text = "Rune"},
-    {type = "RAID", time = 19, duration = 5, text = "Spread"},
-    {type = "RAID", time = 24, duration = 6, text = "Bait"},
-    {type = "RAID", time = 31, duration = 5, text = "Potion"},
-    {type = "RAID", time = 49, duration = 4, text = "Chains inc"},
-    {type = "RAID", time = 72, duration = 6, text = "Bait"},
-    {type = "RAID", time = 93, duration = 5, text = "Spread"},
-    {type = "RAID", time = 101, duration = 4, text = "Die"},
-    {type = "RAID", time = 109, duration = 5, text = "Release"},
-    {type = "RAID", time = 115, duration = 3, text = "Rune"},
-    {type = "RAID", time = 119, duration = 6, text = "Bait"},
-    {type = "RAID", time = 164, duration = 3, text = "Spread"},
-    {type = "RAID", time = 167, duration = 6, text = "Bait"},
-    {type = "RAID", time = 216, duration = 4, text = "Spread"},
-    {type = "RAID", time = 220, duration = 6, text = "Bait"},
-    {type = "RAID", time = 226, duration = 4, text = "Potion"},
-    {type = "RAID", time = 269, duration = 4, text = "Spread"},
-    {type = "RAID", time = 273, duration = 6, text = "Bait"}
+    {"RAID", 0, 5, "Rune"},
+    {"RAID", 19, 5, "Spread"},
+    {"RAID", 24, 6, "Bait"},
+    {"RAID", 31, 5, "Potion"},
+    {"RAID", 49, 4, "Chains inc"},
+    {"RAID", 72, 6, "Bait"},
+    {"RAID", 93, 5, "Spread"},
+    {"RAID", 101, 4, "Die"},
+    {"RAID", 109, 5, "Release"},
+    {"RAID", 115, 3, "Rune"},
+    {"RAID", 119, 6, "Bait"},
+    {"RAID", 164, 3, "Spread"},
+    {"RAID", 167, 6, "Bait"},
+    {"RAID", 216, 4, "Spread"},
+    {"RAID", 220, 6, "Bait"},
+    {"RAID", 226, 4, "Potion"},
+    {"RAID", 269, 4, "Spread"},
+    {"RAID", 273, 6, "Bait"}
   }
 }
 
