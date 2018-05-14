@@ -16,6 +16,7 @@ local tinsert, twipe, type = table.insert, table.wipe, type
 local GetInstanceInfo = GetInstanceInfo
 local UnitExists = UnitExists
 
+GGRL.Raid = {}
 GGRL.loadedBosses = {}
 GGRL.timerCount = 0
 GGRL.currentBoss = nil
@@ -72,7 +73,7 @@ end
 function GGRL:COMBAT_LOG_EVENT_UNFILTERED(...)
   -- Antorus
   if self.currentInstance == 1712 then
-    self.Antorus:OnCombatEvent(self.currentBoss, ...)
+    self.Raid.Antorus:OnCombatEvent(self.currentBoss, ...)
   end
 end
 
@@ -93,7 +94,7 @@ function GGRL:LoadRaid()
   -- Antorus
   if id == 1712 then
     LoadAddOn("GGRL_Antorus")
-    self.Antorus:Load()
+    self.Raid.Antorus:Load()
   end
 end
 
@@ -173,7 +174,7 @@ function GGRL:HandleSlash(input)
   if input == "argus" then
     LoadAddOn("GGRL_Antorus")
     self.currentInstance = 1712
-    self.Antorus:Load()
+    self.Raid.Antorus:Load()
     self.currentBoss = 2092
   end
 end

@@ -1,18 +1,18 @@
 -- GLOBALS: GGRL
 local GGRL = GGRL
 local Raid = {}
-GGRL.Antorus = Raid
+GGRL.Raid.Antorus = Raid
 
 function Raid:Load()
   GGRL:Print("Loaded Antorus")
 
   -- Init Bosses
-  Raid.Argus:Init()
+  self.Argus:Init()
 end
 
 function Raid:OnCombatEvent(encounterId, ...)
   -- Argus
   if encounterId == 2092 then
-    Raid.Argus:OnCombatEvent(...)
+    self.Argus.OnCombatEvent(...)
   end
 end

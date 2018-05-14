@@ -1,7 +1,7 @@
 -- GLOBALS: GGRL
 local GGRL = GGRL
 local Boss = {}
-GGRL.Antorus.Argus = Boss
+GGRL.Raid.Antorus.Argus = Boss
 
 --[[ 
   1 type (string)
@@ -58,7 +58,7 @@ function Boss:Init()
   GGRL:LoadBoss(2092, timers)
 end
 
-function Boss:OnCombatEvent(...)
+function Boss.OnCombatEvent(...)
   local _, _, event, _, _, _, _, _, _, _, _, _, spellID, _, _, extraspellID = ...
   if event == "SPELL_AURA_APPLIED" and spellID == 255199 and GGRL.currentBossPhase == 1 then
     GGRL:SetPhase(2)
