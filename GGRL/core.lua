@@ -21,6 +21,7 @@ GGRL.timerCount = 0
 GGRL.currentBoss = nil
 GGRL.currentBossTimes = {}
 GGRL.currentBossPhase = 1
+GGRL.currentInstance = nil
 
 _G["GGRL"] = GGRL
 
@@ -69,7 +70,10 @@ function GGRL:ENCOUNTER_END()
 end
 
 function GGRL:COMBAT_LOG_EVENT_UNFILTERED(...)
-  self.Antorus:OnCombatEvent(self.currentBoss, ...)
+  -- Antorus
+  if self.currentInstance == 1712 then
+    self.Antorus:OnCombatEvent(self.currentBoss, ...)
+  end
 end
 
 -----------------------------------------------------------------------
@@ -78,12 +82,17 @@ end
 
 function GGRL:LoadRaid()
   local _, instanceType, _, _, _, _, _, id = GetInstanceInfo()
-  if instanceType == "none" then return end
+  if instanceType == "none" then
+    GGRL.currentInstance = nil
+    return
+  end
 
+  GGRL.currentInstance = id
   -- Load Raid bosses here. (Clear Bosses table before loading the new ones?)
   twipe(self.loadedBosses)
   -- Antorus
   if id == 1712 then
+    LoadAddOn("GGRL_Antorus")
     self.Antorus:Load()
   end
 end
@@ -162,7 +171,9 @@ function GGRL:HandleSlash(input)
   end
 
   if input == "argus" then
-    self.Antorus:Load(1712)
+    LoadAddOn("GGRL_Antorus")
+    self.currentInstance = 1712
+    self.Antorus:Load()
     self.currentBoss = 2092
   end
 end

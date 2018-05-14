@@ -1,0 +1,12 @@
+## Interface: 70300
+
+## Title: GGRL Antorus
+## Author: Kraffs
+## Notes: Antorus Module
+
+## DefaultState: Enabled
+## LoadOnDemand: 1
+## Dependencies: GGRL
+
+Antorus.lua
+Argus.lua

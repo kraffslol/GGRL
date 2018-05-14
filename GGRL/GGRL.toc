@@ -7,6 +7,3 @@
 embeds.xml
 
 core.lua
-
-Antorus/Antorus.lua
-Antorus/Argus.lua
