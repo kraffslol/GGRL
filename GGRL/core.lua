@@ -42,8 +42,10 @@ end
 
 local function GetEventTimes(table)
   local t = {}
+  local count = 1
   for i = 1, #table do
-    tinsert(t, table[i]["time"])
+    t[count] = table[i]["time"]
+    count = count + 1
   end
   return t
 end
