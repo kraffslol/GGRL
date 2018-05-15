@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- Globals
 --
--- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, tinsert, table, GetInstanceInfo, UnitExists, type
+-- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, tinsert, table, GetInstanceInfo, UnitExists, type, _G, LoadAddOn
 
 local GGRL = LibStub("AceAddon-3.0"):NewAddon("GGRL", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
 
@@ -15,6 +15,7 @@ local SendAddonMessage = SendAddonMessage
 local tinsert, twipe, type = table.insert, table.wipe, type
 local GetInstanceInfo = GetInstanceInfo
 local UnitExists = UnitExists
+local LoadAddOn = LoadAddOn
 
 GGRL.Raid = {}
 GGRL.loadedBosses = {}
@@ -80,6 +81,16 @@ end
 -----------------------------------------------------------------------
 -- Addon
 --
+
+function GGRL:OnInitialize()
+  -- Register Events & ChatCommands
+  self:RegisterChatCommand("ggrl", "HandleSlash")
+  self:RegisterChatCommand("GGRL", "HandleSlash")
+
+  self:RegisterEvent("ENCOUNTER_START")
+  self:RegisterEvent("ENCOUNTER_END")
+  self:RegisterEvent("PLAYER_ENTERING_WORLD", "LoadRaid")
+end
 
 function GGRL:LoadRaid()
   local _, instanceType, _, _, _, _, _, id = GetInstanceInfo()
@@ -178,13 +189,3 @@ function GGRL:HandleSlash(input)
     self.currentBoss = 2092
   end
 end
-
------------------------------------------------------------------------
--- Register Events & ChatCommands
---
-
-GGRL:RegisterChatCommand("ggrl", "HandleSlash")
-GGRL:RegisterEvent("ENCOUNTER_START")
-GGRL:RegisterEvent("ENCOUNTER_END")
-GGRL:RegisterEvent("ZONE_CHANGED_NEW_AREA", "LoadRaid")
-GGRL:RegisterEvent("PLAYER_ENTERING_WORLD", "LoadRaid")
