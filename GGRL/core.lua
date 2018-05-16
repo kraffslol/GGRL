@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------
 -- Globals
 --
--- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, tinsert, table, GetInstanceInfo, UnitExists, type, _G, LoadAddOn
+-- GLOBALS: LibStub, GGRL, C_ChatInfo, SendAddonMessage, RegisterAddonMessagePrefix, table, GetInstanceInfo, UnitExists, type, _G, LoadAddOn
 
 local GGRL = LibStub("AceAddon-3.0"):NewAddon("GGRL", "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0")
 
@@ -12,7 +12,7 @@ end
 
 local _G = _G
 local SendAddonMessage = SendAddonMessage
-local tinsert, twipe, type = table.insert, table.wipe, type
+local twipe, type = table.wipe, type
 local GetInstanceInfo = GetInstanceInfo
 local UnitExists = UnitExists
 local LoadAddOn = LoadAddOn
@@ -21,7 +21,6 @@ GGRL.Raid = {}
 GGRL.loadedBosses = {}
 GGRL.timerCount = 0
 GGRL.currentBoss = nil
-GGRL.currentBossTimes = {}
 GGRL.currentBossPhase = 1
 GGRL.currentInstance = nil
 
@@ -38,16 +37,6 @@ local function GetBossEvent(table, val)
     end
   end
   return false
-end
-
-local function GetEventTimes(table)
-  local t = {}
-  local count = 1
-  for i = 1, #table do
-    t[count] = table[i]["time"]
-    count = count + 1
-  end
-  return t
 end
 
 local function IsBossLoaded(table, encounterId)
@@ -119,7 +108,6 @@ function GGRL:StartEncounterTimer(encounterID)
   self:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
   self.currentBoss = encounterID
   self.currentBossPhase = 1
-  self.currentBossTimes = GetEventTimes(GGRL.loadedBosses[encounterID][1])
   self.combatTimer = GGRL:ScheduleRepeatingTimer("TimerTick", 1)
   self:Print("Timer started")
 end
@@ -129,7 +117,6 @@ function GGRL:StopEncounterTimer()
   self:CancelTimer(self.combatTimer)
   self.currentBoss = nil
   self.timerCount = 0
-  self.currentBossTimes = {}
   self.currentBossPhase = 1
   SendAddonMessage("GGRL_CLEAR", "", "RAID")
 end
