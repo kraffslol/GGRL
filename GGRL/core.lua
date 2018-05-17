@@ -23,6 +23,7 @@ GGRL.timerCount = 0
 GGRL.currentBoss = nil
 GGRL.currentBossPhase = 1
 GGRL.currentInstance = nil
+GGRL.active = {}
 
 _G["GGRL"] = GGRL
 
@@ -44,6 +45,37 @@ local function IsBossLoaded(table, encounterId)
     return true
   end
   return false
+end
+
+local function SendGGRLMessage(prefix, event)
+  --[[ 
+    1 type (string)
+    2 time (int)
+    3 duration (int)
+    4 text (string)
+    5 target (string)
+    6 sound (bool)
+    7 soundfile (string)
+  ]]
+  local msg = event[4]
+  if msg == nil then msg = "" end
+  local target = event[5]
+
+  if event[1] == "RAID" then SendAddonMessage(prefix, msg, "RAID") end
+  if event[1] == "WHISPER" and target ~= nil then
+    -- If target is a table then iterate through it and send a whisper to each target.
+    if type(target) == "table" then
+      for i = 1, #target do
+        if (UnitExists(target[i])) then
+          SendAddonMessage(prefix, msg, "WHISPER", target[i])
+        end
+      end
+    else
+      if (UnitExists(target)) then
+        SendAddonMessage(prefix, msg, "WHISPER", target)
+      end
+    end
+  end
 end
 
 -----------------------------------------------------------------------
@@ -102,6 +134,17 @@ end
 
 function GGRL:LoadBoss(id, timers)
   self.loadedBosses[id] = timers
+  self:SetActiveTimers(id)
+end
+
+function GGRL:SetActiveTimers(id)
+  self.active[id] = {}
+  for i=1, #self.loadedBosses[id] do
+    self.active[id][i] = {}
+    for x = 1, #self.loadedBosses[id][i] do
+      self.active[id][i][x] = false
+    end
+  end
 end
 
 function GGRL:StartEncounterTimer(encounterID)
@@ -115,44 +158,32 @@ end
 function GGRL:StopEncounterTimer()
   self:UnregisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
   self:CancelTimer(self.combatTimer)
+  self:SetActiveTimers(self.currentBoss)
   self.currentBoss = nil
   self.timerCount = 0
   self.currentBossPhase = 1
-  SendAddonMessage("GGRL_CLEAR", "", "RAID")
+  SendAddonMessage("GGRL_END", "", "RAID")
 end
 
 function GGRL:TimerTick()
   self.timerCount = self.timerCount + 1
-
-  -- Process boss events here and send message
-  local event = GetBossEvent(self.loadedBosses[self.currentBoss][self.currentBossPhase], self.timerCount)
-  if event then
-    --[[ 
-      1 type (string)
-      2 time (int)
-      3 duration (int)
-      4 text (string)
-      5 target (string)
-      6 sound (bool)
-      7 soundfile (string)
-    ]]
-    self:Print(event[1], event[2], event[4])
-    --GGRL GGRL_DURATION GGRL_SOUND GGRL_MESSAGE
-    if event[1] == "RAID" then SendAddonMessage("GGRL", event[4], "RAID") end
-
-    if event[1] == "WHISPER" and event[5] then
-      -- If target is a table then iterate through it and send a whisper to each target.
-      if type(event[5]) == "table" then
-        for i = 1, #event[5] do
-          if (UnitExists(event[5][i])) then
-            SendAddonMessage("GGRL", event[4], "WHISPER", event[5][i])
-          end
-        end
-      else
-        if (UnitExists(event[5])) then
-          SendAddonMessage("GGRL", event[4], "WHISPER", event[5])
-        end
-      end
+  local bossEvents = self.loadedBosses[self.currentBoss][self.currentBossPhase]
+  -- Process boss events here and send message(s)
+  for i = 1, #bossEvents do
+    -- Boss event found.
+    if self.timerCount >= bossEvents[i][2] and 
+        self.active[self.currentBoss][self.currentBossPhase][i] == false then
+      SendGGRLMessage("GGRL", bossEvents[i])
+      self.active[self.currentBoss][self.currentBossPhase][i] = true
+      self:Print(bossEvents[i][4])
+    end 
+    
+    -- Message duration expired. Reset
+    local start = bossEvents[i][2]
+    local stop = bossEvents[i][3]
+    if self.timerCount > start+stop and self.active[self.currentBoss][self.currentBossPhase][i] == true then
+      SendGGRLMessage("GGRL_END", bossEvents[i])
+      self.active[self.currentBoss][self.currentBossPhase][i] = 0
     end
   end
 end
@@ -169,6 +200,14 @@ function GGRL:HandleSlash(input)
 
   if input == "stop" then
     self:StopEncounterTimer()
+  end
+
+  if input == "p2" then
+    self:SetPhase(2)
+  end
+
+  if input == "p3" then
+    self:SetPhase(3)
   end
 
   if input == "argus" then

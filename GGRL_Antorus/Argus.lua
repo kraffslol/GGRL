@@ -30,7 +30,7 @@ local timers = {
     {"RAID", 3, 10, "Spread + Bombs"},
     {"RAID", 43, 5, "Bomb inc"},
     {"RAID", 64, 8, "Spread"},
-    {"RAID", 87, 10, "Bomb inc -> Tank Suicide"}
+    {"RAID", 87, 10, "Bomb inc"}
   },
   [3] = {
     {"RAID", 0, 5, "Rune"},
